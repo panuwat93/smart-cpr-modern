@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Card, Typography, Box, TextField, Grid, Paper, Button, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Container, Card, Typography, Box, TextField, Paper, Button, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { useEffect } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
@@ -11,6 +11,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
 
 function App() {
   // State สำหรับข้อมูลผู้ป่วย
@@ -20,7 +21,6 @@ function App() {
   const [timerActive, setTimerActive] = useState(false);
   // State สำหรับสรุปเวลา CPR
   const [startTime, setStartTime] = useState<Date | null>(null);
-  const [stopTime, setStopTime] = useState<Date | null>(null);
   // Log state
   const [logs, setLogs] = useState<string[]>([]);
   // State สำหรับเมนู EKG
@@ -28,7 +28,6 @@ function App() {
   // State สำหรับ Dialog ยืนยันรีเซ็ต
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   // State สำหรับ Atropine
-  const [atropineCount, setAtropineCount] = useState(0);
   const [atropineTimer, setAtropineTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [atropineSeconds, setAtropineSeconds] = useState(0);
   const [atropineActive, setAtropineActive] = useState(false);
@@ -45,6 +44,8 @@ function App() {
   const [showEkgMenu, setShowEkgMenu] = useState(false);
   // เพิ่ม state สำหรับ Snackbar
   const [copySnackbarOpen, setCopySnackbarOpen] = useState(false);
+  // เพิ่ม state สำหรับนับจำนวนครั้ง Atropine
+  const [atropineCount, setAtropineCount] = useState(0);
 
   // เมนูย่อยแต่ละ EKG
   const ekgSubmenus: Record<string, { label: string; color: string }[]> = {
@@ -140,10 +141,10 @@ function App() {
   // Reset Atropine เมื่อ reset หรือเริ่มจับเวลาใหม่
   useEffect(() => {
     if (!timerActive) {
-      setAtropineCount(0);
       setAtropineSeconds(0);
       setAtropineActive(false);
       if (atropineTimer) clearInterval(atropineTimer);
+      setAtropineCount(0); // Reset count when resetting
     }
     // eslint-disable-next-line
   }, [timerActive]);
@@ -283,7 +284,6 @@ function App() {
             onClick={() => {
               setTimerActive(true);
               setStartTime(new Date());
-              setStopTime(null);
               addLog('เริ่มจับเวลา');
             }}
             disabled={timerActive}
@@ -299,7 +299,6 @@ function App() {
             onClick={() => {
               setTimerActive(false);
               const stop = new Date();
-              setStopTime(stop);
               addPatientInfoLog();
               addLog('หยุดจับเวลา');
               addSummaryLog(startTime, stop);
@@ -458,6 +457,26 @@ function App() {
                         </Button>
                       );
                     }
+                    if (activeEkg === 'Bradycardia' && item.label === 'Atropine 1 mg') {
+                      return (
+                        <Button
+                          key={idx}
+                          variant="contained"
+                          onClick={() => {
+                            const nextCount = atropineCount + 1;
+                            setAtropineCount(nextCount);
+                            setAtropineActive(true);
+                            setAtropineSeconds(0);
+                            addLog(`Bradycardia: Atropine 1 mg ครั้งที่ ${nextCount} ที่เวลา ${formatTime(seconds)}`);
+                            playSound(`atropineครั้งที่${nextCount}.mp3`);
+                          }}
+                          disabled={atropineActive || !timerActive || atropineCount >= 3}
+                          sx={{ background: item.color, color: 'white', fontWeight: 700, fontFamily: 'Kanit', fontSize: 18, borderRadius: 999, width: '100%', maxWidth: 340, minHeight: 48, boxShadow: 2, px: 2, '&:hover': { background: item.color, boxShadow: 6, opacity: 0.9 } }}
+                        >
+                          {atropineActive ? `Atropine 1 mg (${atropineCount + 1}) [${formatTime(180 - atropineSeconds)}]` : `Atropine 1 mg (${atropineCount}/3)`}
+                        </Button>
+                      );
+                    }
                     return (
                       <Button key={idx} variant="contained" onClick={() => addLog(`${activeEkg}: ${item.label}`)}
                         sx={{ background: item.color, color: 'white', fontWeight: 700, fontFamily: 'Kanit', fontSize: 18, borderRadius: 999, width: '100%', maxWidth: 340, minHeight: 48, boxShadow: 2, px: 2, '&:hover': { background: item.color, boxShadow: 6, opacity: 0.9 } }}>
@@ -510,18 +529,18 @@ function App() {
             setTimerActive(false);
             setSeconds(0);
             setStartTime(null);
-            setStopTime(null);
             setLogs([]);
             setActiveEkg(null);
             setShowSvtStableSubmenu(false);
             setShowSvtUnstableSubmenu(false);
             setShowEkgMenu(false);
-            setAtropineCount(0);
             setAtropineSeconds(0);
             setAtropineActive(false);
+            setAtropineCount(0); // Reset count when resetting
             setAdrenalineCount(0);
             setAdrenalineSeconds(0);
             setAdrenalineActive(false);
+            setResetDialogOpen(false);
             alert('รีเซ็ตสำเร็จ');
             playSound('รีเซ็ตสำเร็จ.mp3');
           }} color="error" variant="contained">
