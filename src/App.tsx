@@ -131,7 +131,6 @@ function App() {
       setAtropineSeconds(0);
       if (atropineTimer) clearInterval(atropineTimer);
       addLog('ครบเวลา Atropine 1 mg');
-      alert('ครบเวลา Atropine 1 mg');
       // เล่นเสียงครบ 3 นาที
       playSound('atropineครบ3นาที.mp3');
     }
@@ -211,7 +210,7 @@ function App() {
     setActiveEkg(null);
     setShowSvtStableSubmenu(false);
     setShowSvtUnstableSubmenu(false);
-    setShowEkgMenu(false);
+    // setShowEkgMenu(false); // ไม่ต้องย่อเมนูเมื่อกดกลับหน้าหลัก
   };
 
   // ฟังก์ชันคัดลอก log
