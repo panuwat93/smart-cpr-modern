@@ -236,7 +236,7 @@ function App() {
           ข้อมูลผู้ป่วย
         </Typography>
         <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Box sx={{ flex: 1, minWidth: 0, p: 1 }}>
+          <Grid item xs={12}>
             <TextField
               label="ชื่อผู้ป่วย"
               fullWidth
@@ -244,8 +244,8 @@ function App() {
               onChange={e => setPatient({ ...patient, name: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0, p: 1 }}>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               label="HN"
               fullWidth
@@ -253,8 +253,8 @@ function App() {
               onChange={e => setPatient({ ...patient, hn: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0, p: 1 }}>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               label="AN"
               fullWidth
@@ -262,7 +262,7 @@ function App() {
               onChange={e => setPatient({ ...patient, an: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Box>
+          </Grid>
         </Grid>
       </Card>
 
@@ -275,7 +275,7 @@ function App() {
         <Typography variant="h2" fontWeight={700} color="primary" sx={{ fontFamily: 'Kanit', mb: 2 }}>
           {formatTime(seconds)}
         </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+        <Stack direction="column" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
           <Button
             variant="contained"
             color="success"
