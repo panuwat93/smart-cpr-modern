@@ -236,7 +236,7 @@ function App() {
           ข้อมูลผู้ป่วย
         </Typography>
         <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item xs={12}>
+          <Box sx={{ mb: 2 }}>
             <TextField
               label="ชื่อผู้ป่วย"
               fullWidth
@@ -244,8 +244,8 @@ function App() {
               onChange={e => setPatient({ ...patient, name: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box sx={{ mb: 2 }}>
             <TextField
               label="HN"
               fullWidth
@@ -253,8 +253,8 @@ function App() {
               onChange={e => setPatient({ ...patient, hn: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box sx={{ mb: 2 }}>
             <TextField
               label="AN"
               fullWidth
@@ -262,7 +262,7 @@ function App() {
               onChange={e => setPatient({ ...patient, an: e.target.value })}
               sx={{ fontFamily: 'Kanit' }}
             />
-          </Grid>
+          </Box>
         </Grid>
       </Card>
 
